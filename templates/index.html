@@ -4,7 +4,54 @@
     <meta charset="UTF-8">
     <title>Exemplo de uma aplicação em Flask</title>
 </head>
+
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/1.4.8/socket.io.min.js"></script>
+<script type="text/javascript">
+            $(document).ready(function() {
+                var socketio = null;
+                var namespace = "/sockettest"
+                //$("input[name='connect']").on("click", function() {
+                //    socketio = io.connect(
+                //            location.protocol       +
+                //            '//'                    +
+                //            document.domain         +
+                //            ':'                     +
+                //            location.port           +
+                //            namespace
+                //        );
+                //
+                //     socketio.off().on("re_connect", function(msg) {
+                //      $(".report").append(msg.msg + "<br />");
+                //    });
+                //});
+
+                $("input[name='start']").on("click", function() {
+                    socketio = io.connect(
+                                location.protocol       +
+                                '//'                    +
+                                document.domain         +
+                                ':'                     +
+                                location.port           +
+                                namespace
+                            );
+                    socketio.emit("start");
+                    socketio.on("update", function(msg) {
+                        $(".report").append(msg.msg + "<br />");
+                    });
+                });
+
+                $("input[name='stop']").on("click", function() {
+                    socketio.emit("stop");
+                    socketio.disconnect();
+                });
+           });
+</script>
+
 <body>
-    Hello World!
+    <input type="button" name="start" value="Iniciar" />
+    <input type="button" name="stop" value="Parar" />
+    <div class="center display-none">
+			<div class="report"></div>
+	</div>
 </body>
 </html>
